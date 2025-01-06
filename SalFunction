@@ -1,0 +1,51 @@
+    # Import Data
+salary_data = pd.read_csv('salary_data')  # Assuming the data is in a CSV file named 'salary_data'
+print(salary_data.head())  # Display the first few rows to verify
+
+    # Create Employee Function
+def get_employee_details(employee_name):
+    """
+    Returns details of an employee.
+    Args:
+    employee_name: The name of the employee.
+    Returns:
+    A pandas Series containing the employee's details, or None if not found.
+    """
+    try:
+        employee_details = salary_data[salary_data['EmployeeName'] == employee_name].iloc[0]
+        return employee_details
+    except IndexError:
+        return None
+
+    # Data Processing with Dictionary
+salary_dict = salary_data.to_dict(orient='records')  # List of dictionaries
+
+    # Example processing: Calculate average salary
+total_salary = sum(employee['TotalPay'] for employee in salary_dict)
+average_salary = total_salary / len(salary_dict)
+print(f"Average Salary: {average_salary}")
+
+    # Export Employee Details
+def export_employee_details(employee_name):
+    """
+    Exports employee details to a CSV file within a zipped folder.
+    """
+    employee_info = get_employee_details(employee_name)
+    if employee_info is not None:
+        try:
+            with open('employee_details.csv', 'w', newline='') as csvfile:
+                writer = csv.writer(csvfile)
+                writer.writerow(employee_info.index)  # Write header row
+                writer.writerow(employee_info.values)
+            with zipfile.ZipFile('Employee Profile.zip', 'w') as zipf:
+                zipf.write('employee_details.csv')
+            print("Employee details exported successfully!")
+        except Exception as e:
+            print(f"An error occurred: {e}")
+    else:
+        print("Employee not found.")
+
+
+    # Example:
+employee_name = 'GARY JIMENEZ'  # Replace with an actual employee name from your data
+export_employee_details(employee_name)
