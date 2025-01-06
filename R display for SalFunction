@@ -1,0 +1,14 @@
+  # Set working directory 
+setwd("c/user/anchejr/desktop")
+
+
+  # Unzip the file
+unzip("Employee Profile.zip")
+
+
+  # Read the CSV data
+employee_data <- read.csv("employee_details.csv")
+
+
+  # Display the data
+print(employee_data)
